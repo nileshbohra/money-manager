@@ -8,7 +8,7 @@
     <h1>💰 Money Manager App</h1>
     <p>Money Manager is a personal finance management tool that helps users track their income and expenses across various categories. It provides a detailed analysis of your spending habits, allowing you to make informed financial decisions. The app also visualizes expense data using interactive charts.</p>
     <h2>🌐 Deployed Link</h2>
-    <p>You can check out the live app <a href="" target="_blank" rel="noopener noreferrer">here</a>.</p>
+    <p>You can check out the live app <a href="https://money-manager-two-ashen.vercel.app/" target="_blank" rel="noopener noreferrer">here</a>.</p>
     <h2>🛠️ Key Features</h2>
     <ul>
         <li><strong>Income & Expense Tracking:</strong> Keep track of all your income and expenses, categorized for better clarity.</li>
