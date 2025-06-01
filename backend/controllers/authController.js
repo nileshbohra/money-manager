@@ -7,7 +7,6 @@ const privateKey = process.env.JWT_PRIVATE_KEY;
 
 // Authenticate Token Middleware
 exports.authenticateToken = (req, res, next) => {
-  console.log(req.headers);
   let token;
   if (!!req.headers.cookie)
     token = req.headers.cookie.split("=")[1];
@@ -21,7 +20,17 @@ exports.authenticateToken = (req, res, next) => {
   });
 };
 
-// Login Controller
+exports.checkLogin = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+    if (!user) return res.send("User not found");
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ where: { email } });
@@ -31,7 +40,7 @@ exports.login = async (req, res) => {
   const result = await bcrypt.compare(password, user.password);
   if (!result) return res.send("Incorrect password");
 
-  const token = jwt.sign({ username: user.username, email }, privateKey, { expiresIn: '1h' });
+  const token = jwt.sign({ id: user.id, username: user.username, email }, privateKey, { expiresIn: '1d' });
   res.cookie('token', token, {
     httpOnly: true,
     secure: true,
@@ -40,7 +49,6 @@ exports.login = async (req, res) => {
   res.json({ success: true });
 };
 
-// Register Controller
 exports.register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -56,6 +64,7 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       email
     });
+    newUser.save();
     res.status(200).json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Failed to create user" });
@@ -63,7 +72,6 @@ exports.register = async (req, res) => {
 
 };
 
-// Protected Route
 exports.protectedRoute = (req, res) => {
   res.send("Access granted to protected route!");
 };

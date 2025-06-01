@@ -13,6 +13,7 @@ export const getTransactionsApi = async () => {
         throw error;
     }
 };
+
 export const addTransactionApi = async (transactionData) => {
     try {
         const response = await axios.post(

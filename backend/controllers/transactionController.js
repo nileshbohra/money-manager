@@ -2,44 +2,15 @@ const Category = require('../db/models/categories');
 const Transaction = require('../db/models/transations');
 
 const getAllTransactions = async (req, res) => {
-    let allCategories = {
-
-    }
     try {
-        const categoryList = await Category.findAll({
-            where: {
-                user_id: 1
-            }
-        })
-
-        if (!categoryList)
-            return res.status(404).json({
-                message: "Error in fetching categories"
-            })
-        categoryList.forEach((el) => {
-            allCategories[el.dataValues.id] = {
-                id: el.dataValues.id,
-                category_name: el.dataValues.category_name,
-                category_type: el.dataValues.category_type,
-            }
-        })
-        console.log(allCategories)
+        const user_id = req.user.id;
         const transactionList = await Transaction.findAll({
-            where: {
-            }
+            where: { user_id: user_id }
         });
 
         res.status(200).json({
             success: true,
-            data: transactionList.map((tran) => {
-                let obj = {
-                    id: tran.dataValues.id,
-                    amount: tran.dataValues.amount,
-                    transactionType: tran.dataValues.transaction_type,
-                    description: tran.dataValues.description
-                }
-                return { ...obj, category: allCategories[tran.category_id] }
-            })
+            data: transactionList
         })
     } catch (err) {
         console.error('Error fetching Transactions:', err);
@@ -48,13 +19,14 @@ const getAllTransactions = async (req, res) => {
 }
 
 const addTransaction = async (req, res) => {
-
     try {
         let { transactionType, amount, categoryID, description } = req.body;
+        const userId = req.user.id;
+
         transactionType = !!transactionType.income ? "income" : "expense";
         const category = await Category.findOne({
             where: {
-                id: +categoryID
+                id: categoryID
             }
         })
 
@@ -63,13 +35,14 @@ const addTransaction = async (req, res) => {
 
 
         const newTransaction = await Transaction.create({
-            account_id: 1,
-            category_id: +categoryID,
+            user_id: userId,
+            account_id: 6,
+            category_id: categoryID,
             description: description,
             transaction_type: transactionType,
-            amount: +amount
+            amount: amount
         })
-        console.log(newTransaction, 'transaction_print');
+
         let obj = {
             id: newTransaction.dataValues.id,
             amount: newTransaction.dataValues.amount,
@@ -78,7 +51,7 @@ const addTransaction = async (req, res) => {
         }
         return res.status(200).json({ success: true, data: { ...obj, category: category.dataValues } });
     } catch (err) {
-        console.error('Error adding Transaction:', err);
+        console.error('Error adding Transaction:', err.message);
         res.status(500).json({ message: 'Error adding Transaction' });
     }
 }

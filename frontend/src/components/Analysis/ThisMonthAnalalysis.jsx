@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Apexchart from "./ApexCharts";
-import axios from "axios";
 import { getAnalysis } from "../../api/analysis";
 
 const ThisMonthAnalysis = () => {
@@ -13,6 +12,7 @@ const ThisMonthAnalysis = () => {
 	useEffect(() => {
 		getAnalysis()
 			.then((data) => {
+				console.log(data);
 				const series = data.map((item) => item.totalSpent);
 				const labels = data.map((item) => item.category);
 				setChartData({

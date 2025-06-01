@@ -8,19 +8,23 @@ import {
 } from "../../features/transaction/transactionSlice";
 import TransactionTable from "./TransactionTable";
 import { setCategories } from "../../features/category/categorySlice";
+import { setAccounts } from "../../features/accounts/accountsSlice";
 import TransactionFilter from "./TransactionFilter";
 import { useNavigate } from "react-router-dom";
 import { getCategoriesApi } from "../../api/category";
+import { getAccountsApi } from "../../api/account";
 import {
 	getTransactionsApi,
 	addTransactionApi,
 	deleteTransactionApi,
 } from "../../api/transactions";
+import { toast } from "sonner";
 
 const Transactions = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [showModal, setShowModal] = useState(false);
+	const accounts = useSelector((state) => state.accounts.value);
 	const transactions = useSelector((state) => state.transaction.value);
 	const categories = useSelector((state) => state.category.value);
 	const [filterCategoryID, setFilterCategoryID] = useState("");
@@ -38,39 +42,29 @@ const Transactions = () => {
 
 	useEffect(() => {
 		const fetchCategories = async () => {
-			getCategoriesApi()
+			await getCategoriesApi()
 				.then((params) => {
-					let data = params.map((el) => {
-						let obj = {
-							id: el.id,
-							name: el.category_name,
-							type: el.category_type,
-						};
-						return obj;
-					});
-					dispatch(setCategories(data));
+					dispatch(setCategories(params));
 				})
 				.catch((err) => {
 					console.error("Error fetching categories:", err);
 					navigate("/login");
 				});
 		};
-
-		const fetchTransactions = async () => {
-			getTransactionsApi()
+		const fetchAccounts = async () => {
+			await getAccountsApi()
 				.then((params) => {
-					let data = params.data.map((el) => {
-						let obj = {
-							id: el.id,
-							categoryID: el.category_id,
-							amount: el.amount,
-							transactionType: el.transaction_type,
-							description: el.description,
-							createdAt: el.created_at,
-						};
-						return obj;
-					});
-					dispatch(setTransactions(data));
+					dispatch(setAccounts(params));
+				})
+				.catch((err) => {
+					console.error("Error fetching accounts:", err);
+					navigate("/login");
+				});
+		};
+		const fetchTransactions = async () => {
+			await getTransactionsApi()
+				.then((params) => {
+					dispatch(setTransactions(params.data));
 				})
 				.catch((err) => {
 					console.error("Error fetching transactions:", err);
@@ -80,7 +74,11 @@ const Transactions = () => {
 
 		const fetchAllData = async () => {
 			try {
-				await Promise.all([fetchCategories(), fetchTransactions()]);
+				await Promise.all([
+					fetchCategories(),
+					fetchAccounts(),
+					fetchTransactions(),
+				]);
 			} catch (err) {
 				console.error(err);
 				navigate("/login");
@@ -98,8 +96,7 @@ const Transactions = () => {
 			) {
 				addTransactionApi(transactinoform)
 					.then((params) => {
-						let data = params.data.data;
-						console.log(data);
+						let data = params;
 
 						data = {
 							...data,
@@ -114,15 +111,13 @@ const Transactions = () => {
 										: false,
 							},
 						};
-						console.log(data, "after");
 						dispatch(addTransaction(data));
 					})
 					.catch((err) => {
 						console.error("Error adding transaction:", err);
 					});
 			} else {
-				// handle this in modal itself
-				alert("All Fields are mendatrory");
+				toast.error("All Fields are mendatrory");
 			}
 		} catch (err) {
 			console.error(err);
@@ -215,7 +210,7 @@ const Transactions = () => {
 	const filteredTransactions = useMemo(() => {
 		if (!!filterCategoryID)
 			return transactions.filter(
-				(tran) => tran.category.id == filterCategoryID
+				(tran) => tran.category_id == filterCategoryID
 			);
 		return transactions;
 	}, [filterCategoryID, transactions]);
@@ -247,6 +242,8 @@ const Transactions = () => {
 						<ul>
 							{transactions.length > 0 ? (
 								<TransactionTable
+									accounts={accounts}
+									categories={categories}
 									transactions={filteredTransactions}
 									handleEdit={handleEdit}
 									handleDelete={handleDelete}
@@ -338,7 +335,9 @@ const Transactions = () => {
 															key={index}
 															value={category.id}
 														>
-															{category.name}
+															{
+																category.category_name
+															}
 														</option>
 													)
 												)}

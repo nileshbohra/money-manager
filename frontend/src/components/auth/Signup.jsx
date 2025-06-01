@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerApi } from "../../api/auth";
+import { toast } from "sonner";
 
 const Signup = () => {
 	const [signupForm, setSignupForm] = useState({
@@ -32,14 +33,14 @@ const Signup = () => {
 			.then((res) => {
 				console.log(res);
 				if (res.success) {
+					toast.success("Sign-Up Successful");
 					navigate("/login");
 				} else {
-					alert(res);
+					toast.info(res);
 				}
 			})
 			.catch((err) => {
-				console.log(err);
-				alert("Signup Failed");
+				toast.error(err);
 			});
 	};
 

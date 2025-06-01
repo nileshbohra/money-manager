@@ -6,18 +6,21 @@ const SixMonthsAnalysis = () => {
     useEffect(() => {
 
     }, [])
-    const chartData = {
+    const sampleChartData = {
         series: [30, 40, 45, 100, 49, 60],
         labels: ['jan', 'feb', 'mar', 'apr', 'may','jun'],
         type: "bar",
     };
-    return <>
-        <Apexchart id="expense-bar"
-            series={chartData.series}
-            labels={chartData.labels}
-            type={chartData.type}
-        />
-    </>
+    return (
+		<>
+			<Apexchart
+				id="expense-bar"
+				series={sampleChartData.series}
+				labels={sampleChartData.labels}
+				type={sampleChartData.type}
+			/>
+		</>
+	);
 
 }
 

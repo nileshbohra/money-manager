@@ -22,7 +22,6 @@ const Apexchart = ({ id, labels, series, type }) => {
                 data: series,
             }
         ]
-        console.log(chartData, 'xxxx');
     }
 
     return <>

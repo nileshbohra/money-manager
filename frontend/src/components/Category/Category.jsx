@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Modal from "../Modal/Modal";
+import Modal from "./Modal";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ import {
 	editCategoryApi,
 	deleteCategoryApi,
 } from "../../api/category";
+import { toast } from "sonner";
 
 const Category = () => {
 	const categories = useSelector((state) => state.category.value);
@@ -66,7 +67,7 @@ const Category = () => {
 					console.error("Error adding category:", err);
 				});
 		} else {
-			alert("All Fields are mendatrory");
+			toast.error("All Fields are mendatrory");
 		}
 	};
 

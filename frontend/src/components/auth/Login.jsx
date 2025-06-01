@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setAuthToken } from "../../features/authToken/authTokenSlice";
+import {
+	setAuthToken,
+	setIsAuthenticated,
+} from "../../features/authToken/authTokenSlice";
 import { loginApi } from "../../api/auth";
+import { toast } from "sonner";
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -30,21 +34,20 @@ const Login = () => {
 		loginApi(payload)
 			.then((res) => {
 				if (!!res.success) {
-					alert("Login Sucess");
+					toast.success("Login Successful");
 					dispatch(setAuthToken(res.token));
+					dispatch(setIsAuthenticated(true));
 					navigate("/");
 				} else {
-					alert(res);
+					toast.info(res);
 				}
-				console.log(res);
 			})
 			.catch((err) => {
-				console.log(err);
+				toast.error(err);
 			});
 	};
 
 	return (
-		// <div className="flex justify-center items-center h-screen bg-gray-100">
 		<div className="min-h-screen flex items-center justify-center bg-gray-800">
 			<div className="w-full max-w-md bg-white p-8 border border-gray-300 rounded-lg shadow-md">
 				<h2 className="text-2xl font-semibold text-center mb-6 text-black">

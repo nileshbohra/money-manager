@@ -12,9 +12,7 @@ fields['user_id'] = {
   }
 };
 fields['account_name'] = { type: DataTypes.STRING(100), allowNull: false };
-fields['account_type'] = { type: DataTypes.ENUM('checking', 'saving', 'credit'), allowNull: false };
 fields['balance'] = { type: DataTypes.DECIMAL(15, 2), allowNull: true };
-
 
 const indexes = [
   { fields: ['user_id'] }

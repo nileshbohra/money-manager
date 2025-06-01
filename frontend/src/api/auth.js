@@ -23,4 +23,16 @@ const loginApi = async (userData) => {
     }
 };
 
-export { registerApi, loginApi };
+const checkLoginApi = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/auth/check`, {
+            withCredentials: true // Ensure cookies are sent with the request
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error checking login status", error);
+        throw error;
+    }
+};
+
+export { registerApi, loginApi , checkLoginApi};
