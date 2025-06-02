@@ -10,12 +10,12 @@ const Apexcharts = () => {
 
 	return (
 		<>
-			<div className="min-h-screen text-white flex items-center justify-center bg-gray-800">
-				<div>
+			<div className="min-h-screen text-white flex items-start justify-center bg-gray-800">
+				<div className="flex flex-col w-full">
 					<h1 className="text-xl font-bold mb-4 pl-20 text-center mb-10 mt-10">
 						Expense Overview
 					</h1>
-					<div className="flex space-x-20">
+					<div className="flex justify-center space-x-20">
 						<ThisMonthAnalysis />
 						<SixMonthsAnalysis />
 					</div>

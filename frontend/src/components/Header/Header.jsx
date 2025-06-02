@@ -28,17 +28,17 @@ const Navbar = () => {
 				</div>
 				<div className="space-x-6">
 					<ul className="flex space-x-8">
-						<li className="hover:text-gray-400">
+						{/* <li className="hover:text-gray-400">
 							<Link to="/">Home</Link>
-						</li>
+						</li> */}
 						<li className="hover:text-gray-400">
 							<Link to="/analysis">Analysis</Link>
 						</li>
 						<li className="hover:text-gray-400">
-							<Link to="/category">Categories</Link>
+							<Link to="/transactions">Transactions</Link>
 						</li>
 						<li className="hover:text-gray-400">
-							<Link to="/transactions">Transactions</Link>
+							<Link to="/category">Categories</Link>
 						</li>
 						<li className="hover:text-gray-400">
 							<Link to="/accounts">Accounts</Link>
