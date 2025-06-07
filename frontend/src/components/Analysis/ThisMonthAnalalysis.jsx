@@ -12,7 +12,6 @@ const ThisMonthAnalysis = () => {
 	useEffect(() => {
 		getAnalysis()
 			.then((data) => {
-				console.log(data);
 				const series = data.map((item) => item.totalSpent);
 				const labels = data.map((item) => item.category);
 				setChartData({

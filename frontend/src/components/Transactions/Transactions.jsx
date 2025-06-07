@@ -31,6 +31,7 @@ const Transactions = () => {
 
 	const [transactinoform, setTransactionForm] = useState({
 		categoryID: "",
+		accountID: "",
 		amount: "",
 		transactionType: {
 			income: false,
@@ -153,6 +154,8 @@ const Transactions = () => {
 	const saveEdited = (id) => {
 		let tran = {
 			id: id,
+			categoryID: transactinoform.categoryID,
+			accountID: transactinoform.accountID,
 			amount: transactinoform.amount,
 			type: !!transactinoform.transactionType.income
 				? "income"
@@ -337,6 +340,37 @@ const Transactions = () => {
 														>
 															{
 																category.category_name
+															}
+														</option>
+													)
+												)}
+											</select>
+										</div>
+
+										<div className="mb-6">
+											<label
+												htmlFor="accountID"
+												className="block text-sm font-medium text-gray-700 mb-2"
+											>
+												Select Account
+											</label>
+											<select
+												onChange={handleChange}
+												name="accountID"
+												id="accountID"
+												className="w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+											>
+												<option>
+													Select Option...
+												</option>
+												{accounts.map(
+													(account, index) => (
+														<option
+															key={index}
+															value={account.id}
+														>
+															{
+																account.account_name
 															}
 														</option>
 													)

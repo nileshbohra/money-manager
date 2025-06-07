@@ -2,10 +2,19 @@ import React, { useEffect, useState } from "react";
 import SixMonthsAnalysis from "./SixMonthsAnalysis";
 import ThisMonthAnalysis from "./ThisMonthAnalalysis";
 import { getAnalysis } from "../../api/analysis";
+import { useNavigate } from "react-router-dom";
 
 const Apexcharts = () => {
+	const navigate = useNavigate();
+	const [analysisData, setAnalysisData] = useState([]);
 	useEffect(() => {
-		getAnalysis();
+		getAnalysis()
+			.then((data) => {
+				setAnalysisData(data);
+			})
+			.catch((error) => {
+				navigate("/login");
+			});
 	}, []);
 
 	return (

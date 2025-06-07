@@ -24,14 +24,14 @@ const Apexchart = ({ id, labels, series, type }) => {
         ]
     }
 
-    return <>
+    return <div className="bg-slate-50 rounded-lg p-4">
         <Chart
             options={chartData.options}
             type={type}
             width="500"
             series={chartData.series}
         />
-    </>
+    </div>
 }
 
 export default Apexchart;

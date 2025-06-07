@@ -33,8 +33,8 @@ const TransactionTable = ({
 				</tr>
 			</thead>
 			<tbody>
-				{transactions.map((transaction) => (
-					<tr key={transaction.id} className="bg-gray-100">
+				{transactions.map((transaction, index) => (
+					<tr key={index} className="bg-gray-100">
 						{/* <td className="py-2 px-4 border-b">{transaction.account || "avinash"}</td> */}
 						<td className="py-2 px-4 border-b text-right">
 							{categoryName(transaction.category_id)}

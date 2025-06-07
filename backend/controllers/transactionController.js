@@ -1,5 +1,6 @@
 const Category = require('../db/models/categories');
 const Transaction = require('../db/models/transations');
+const Account = require('../db/models/accounts');
 
 const getAllTransactions = async (req, res) => {
     try {
@@ -20,7 +21,7 @@ const getAllTransactions = async (req, res) => {
 
 const addTransaction = async (req, res) => {
     try {
-        let { transactionType, amount, categoryID, description } = req.body;
+        let { transactionType, amount, categoryID, description, accountID } = req.body;
         const userId = req.user.id;
 
         transactionType = !!transactionType.income ? "income" : "expense";
@@ -34,14 +35,38 @@ const addTransaction = async (req, res) => {
             return res.status(404).json({ error: "category Not Found" })
 
 
+        const account = await Account.findOne({
+            where: {
+                id: accountID,
+                user_id: userId
+            }
+        });
+
+        if (!account)
+            return res.status(404).json({ error: "Account Not Found" })
+        else {
+            if (transactionType === "income") {
+                account.balance = account.balance + amount;
+                await account.save();
+            } else {
+                account.balance = account.balance - amount;
+                await account.save();
+            }
+        }
+
         const newTransaction = await Transaction.create({
             user_id: userId,
-            account_id: 6,
+            account_id: accountID,
             category_id: categoryID,
             description: description,
             transaction_type: transactionType,
             amount: amount
         })
+
+        if (!newTransaction)
+            return res.status(400).json({ error: "Error adding Transaction" })
+
+
 
         let obj = {
             id: newTransaction.dataValues.id,
