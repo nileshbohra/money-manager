@@ -71,6 +71,29 @@ exports.register = async (req, res) => {
   }
 
 };
+exports.logout = (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None',
+    path: '/'
+  });
+  res.json({ success: true });
+};
+
+// exports.logout = (req, res) => {
+//   res.clearCookie('token', {
+//     httpOnly: true,
+//     secure: true,
+//     sameSite: 'None'
+//   });
+//   res.json({ success: true });
+// };
+
+// exports.logout = (req, res) => {
+//   res.clearCookie('token');
+//   res.json({ success: true });
+// };
 
 exports.protectedRoute = (req, res) => {
   res.send("Access granted to protected route!");

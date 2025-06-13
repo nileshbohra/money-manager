@@ -12,14 +12,13 @@ const Navbar = () => {
 	const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
 	useEffect(() => {
-		checkLoginApi()
-			.then((res) => {
-				if (res.success) {
-					dispatch(setIsAuthenticated(true));
-				} else {
-					dispatch(setIsAuthenticated(false));
-				}
-			});
+		checkLoginApi().then((res) => {
+			if (res.success) {
+				dispatch(setIsAuthenticated(true));
+			} else {
+				dispatch(setIsAuthenticated(false));
+			}
+		});
 	}, []);
 	return (
 		<nav className="flex justify-center bg-black text-white px-8 md:px-16 lg:px-24">
@@ -77,13 +76,13 @@ const Navbar = () => {
 								}}
 							>
 								<ul>
-									<li className="px-4 py-2 hover:bg-gray-200">
+									<li className="px-4 py-2 hover:bg-gray-200 rounded-lg">
 										<Link to="/profile">My Profile</Link>
 									</li>
-									<li className="px-4 py-2 hover:bg-gray-200">
+									<li className="px-4 py-2 hover:bg-gray-200 rounded-lg">
 										<Link to="/settings">Settings</Link>
 									</li>
-									<li className="px-4 py-2 hover:bg-gray-200">
+									<li className="px-4 py-2 hover:bg-gray-200 rounded-lg">
 										<Link to="/logout">Logout</Link>
 									</li>
 								</ul>

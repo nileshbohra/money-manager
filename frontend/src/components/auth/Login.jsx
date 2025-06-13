@@ -1,20 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
 	setAuthToken,
 	setIsAuthenticated,
 } from "../../features/authToken/authTokenSlice";
-import { loginApi } from "../../api/auth";
+import { loginApi, logoutApi } from "../../api/auth";
 import { toast } from "sonner";
 
 const Login = () => {
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const path = window.location.pathname;
+
+	useEffect(() => {
+		if (path === "/logout") {
+			logoutApi().then((res) => {
+				if (!!res.success) {
+					toast.success("Logout Successful");
+					dispatch(setAuthToken(null));
+					dispatch(setIsAuthenticated(false));
+					navigate("/login");
+				} else {
+					toast.error(res);
+				}
+			});
+		}
+	}, []);
+
 	const [loginForm, setLoginForm] = useState({
 		email: "",
 		password: "",
 	});
-	const navigate = useNavigate();
 
 	const handleChangeLogin = (e) => {
 		const { name, value } = e.target;

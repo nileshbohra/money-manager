@@ -35,4 +35,16 @@ const checkLoginApi = async () => {
     }
 };
 
-export { registerApi, loginApi , checkLoginApi};
+const logoutApi = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/auth/logout`, {
+            withCredentials: true // Ensure cookies are sent with the request
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error logging out", error);
+        throw error;
+    }
+};
+
+export { registerApi, loginApi , checkLoginApi, logoutApi};
