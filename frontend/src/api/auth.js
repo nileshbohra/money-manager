@@ -6,7 +6,7 @@ const registerApi = async (userData) => {
         const response = await axios.post(`${API_URL}/auth/register`, userData);
         return response.data;
     } catch (error) {
-        console.error("Error registering user", error.message);
+        console.error("Error registering user", error);
         throw error;
     }
 };
@@ -18,7 +18,7 @@ const loginApi = async (userData) => {
         });
         return response.data;
     } catch (error) {
-        console.error("Error logging in", error.message);
+        console.error("Error logging in", error);
         throw error;
     }
 };
@@ -30,9 +30,9 @@ const checkLoginApi = async () => {
         });
         return response.data;
     } catch (error) {
-        console.error("Error checking login status", error.message);
+        console.error("Error checking login status", error);
         throw error;
     }
 };
 
-export { registerApi, loginApi, checkLoginApi };
+export { registerApi, loginApi , checkLoginApi};
