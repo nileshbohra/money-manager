@@ -3,7 +3,7 @@ const sequelize = require('sequelize');
 const Category = require('../db/models/categories');
 
 const getThisMonthAnalysis = async (req, res) => {
-    let query = `SELECT * FROM TRANSACTIONS WHERE MONTH(createdAt) = MONTH(CURDATE()) AND YEAR(createdAt) = YEAR(CURDATE()) AND transaction_type = 'expense';`;
+    let query = `SELECT * FROM transactions WHERE MONTH(createdAt) = MONTH(CURDATE()) AND YEAR(createdAt) = YEAR(CURDATE()) AND transaction_type = 'expense';`;
     let categoryObj = {};
 
     try {

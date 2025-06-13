@@ -23,7 +23,6 @@ const Apexcharts = () => {
 
 	return (
 		<>
-			{" "}
 			{isLoading ? (
 				<DotLottieReact
 					height={100}
