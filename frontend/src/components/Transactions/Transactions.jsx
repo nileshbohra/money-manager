@@ -19,6 +19,7 @@ import {
 	deleteTransactionApi,
 } from "../../api/transactions";
 import { toast } from "sonner";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Transactions = () => {
 	const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const Transactions = () => {
 	const transactions = useSelector((state) => state.transaction.value);
 	const categories = useSelector((state) => state.category.value);
 	const [filterCategoryID, setFilterCategoryID] = useState("");
+	const [isLoading, setIsLoading] = useState(true);
 
 	const [transactinoform, setTransactionForm] = useState({
 		categoryID: "",
@@ -46,26 +48,29 @@ const Transactions = () => {
 			await getCategoriesApi()
 				.then((params) => {
 					dispatch(setCategories(params));
+					setIsLoading(false);
 				})
 				.catch((err) => {
 					console.error("Error fetching categories:", err);
 					navigate("/login");
 				});
-		};
-		const fetchAccounts = async () => {
-			await getAccountsApi()
+			};
+			const fetchAccounts = async () => {
+				await getAccountsApi()
 				.then((params) => {
 					dispatch(setAccounts(params));
+					setIsLoading(false);
 				})
 				.catch((err) => {
 					console.error("Error fetching accounts:", err);
 					navigate("/login");
 				});
-		};
-		const fetchTransactions = async () => {
-			await getTransactionsApi()
+			};
+			const fetchTransactions = async () => {
+				await getTransactionsApi()
 				.then((params) => {
 					dispatch(setTransactions(params.data));
+					setIsLoading(false);
 				})
 				.catch((err) => {
 					console.error("Error fetching transactions:", err);
@@ -220,46 +225,55 @@ const Transactions = () => {
 
 	return (
 		<>
-			<div className="min-h-screen flex items-center justify-center bg-gray-800">
-				<div className="fixed bottom-4 right-4 md:bottom-6 md:right-6">
-					<button
-						onClick={() => setShowModal(true)}
-						className="bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 transition duration-300 w-full md:w-auto"
-					>
-						+ Add New Transaction
-					</button>
-				</div>
-				<div className="bg-white w-full md:w-8/12 p-6 rounded-md shadow-lg">
-					<div className="mb-4">
-						<h1 className="text-xl font-bold text-center mb-4">
-							Transactions
-						</h1>
-						<div className="w-2/4 mt-10">
-							<TransactionFilter
-								categories={categories}
-								filterCategoryID={filterCategoryID}
-								setFilterCategoryID={setFilterCategoryID}
-								onFilter={onFilter}
-							/>
-						</div>
-						<ul>
-							{transactions.length > 0 ? (
-								<TransactionTable
-									accounts={accounts}
+			{isLoading ? (
+				<DotLottieReact
+					height={100}
+					src="https://lottie.host/9b6f79c5-2c2a-43e8-b023-93ef8cfd2a9d/rYqDswSMIi.lottie"
+					loop
+					autoplay
+				/>
+			) : (
+				<div className="min-h-screen flex items-center justify-center bg-gray-800">
+					<div className="fixed bottom-4 right-4 md:bottom-6 md:right-6">
+						<button
+							onClick={() => setShowModal(true)}
+							className="bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 transition duration-300 w-full md:w-auto"
+						>
+							+ Add New Transaction
+						</button>
+					</div>
+					<div className="bg-white w-full md:w-8/12 p-6 rounded-md shadow-lg">
+						<div className="mb-4">
+							<h1 className="text-xl font-bold text-center mb-4">
+								Transactions
+							</h1>
+							<div className="w-2/4 mt-10">
+								<TransactionFilter
 									categories={categories}
-									transactions={filteredTransactions}
-									handleEdit={handleEdit}
-									handleDelete={handleDelete}
+									filterCategoryID={filterCategoryID}
+									setFilterCategoryID={setFilterCategoryID}
+									onFilter={onFilter}
 								/>
-							) : (
-								<p className="text-center text-gray-500">
-									No Transactions added yet.
-								</p>
-							)}
-						</ul>
+							</div>
+							<ul>
+								{transactions.length > 0 ? (
+									<TransactionTable
+										accounts={accounts}
+										categories={categories}
+										transactions={filteredTransactions}
+										handleEdit={handleEdit}
+										handleDelete={handleDelete}
+									/>
+								) : (
+									<p className="text-center text-gray-500">
+										No Transactions added yet.
+									</p>
+								)}
+							</ul>
+						</div>
 					</div>
 				</div>
-			</div>
+			)}
 			{showModal && (
 				<div
 					className="relative z-10"

@@ -16,6 +16,7 @@ import {
 	deleteCategoryApi,
 } from "../../api/category";
 import { toast } from "sonner";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Category = () => {
 	const categories = useSelector((state) => state.category.value);
@@ -24,6 +25,7 @@ const Category = () => {
 	const location = useLocation();
 	const isAddModal = location.pathname === "/category/add";
 	const isEditModal = !!location.pathname.includes("/category/edit");
+	const [isLoading, setIsLoading] = useState(true);
 
 	const [categoryForm, setCategoryForm] = useState({
 		categoryName: "",
@@ -46,6 +48,7 @@ const Category = () => {
 					return obj;
 				});
 				dispatch(setCategories(data));
+				setIsLoading(false);
 			})
 			.catch((err) => {
 				console.error("Error fetching categories:", err);
@@ -150,58 +153,70 @@ const Category = () => {
 
 	return (
 		<>
-			<div className="min-h-screen flex items-center justify-center bg-gray-800">
-				<div className="bg-white w-96 p-6 rounded-md shadow-lg">
-					<div className="mb-4">
-						<h1 className="text-xl font-bold text-center mb-4">
-							Category List
-						</h1>
-						<ul>
-							{categories.length > 0 ? (
-								categories.map((category) => (
-									<li
-										key={category.id}
-										className="flex justify-between items-center bg-gray-100 p-4 mb-2 rounded-md"
-									>
-										<span className="font-semibold">
-											{category.name} ({category.type})
-										</span>
-										<div className="flex space-x-4">
-											<FaEdit
-												className="text-blue-500 cursor-pointer"
-												onClick={() =>
-													handleEdit(category.id)
-												}
-											/>
-											<FaTrashAlt
-												className="text-red-500 cursor-pointer"
-												onClick={() =>
-													handleDelete(category.id)
-												}
-											/>
-										</div>
-									</li>
-								))
-							) : (
-								<p className="text-center text-gray-500">
-									No categories added yet.
-								</p>
-							)}
-						</ul>
-					</div>
+			{isLoading ? (
+				<DotLottieReact
+					height={100}
+					src="https://lottie.host/9b6f79c5-2c2a-43e8-b023-93ef8cfd2a9d/rYqDswSMIi.lottie"
+					loop
+					autoplay
+				/>
+			) : (
+				<div className="min-h-screen flex items-center justify-center bg-gray-800">
+					<div className="bg-white w-96 p-6 rounded-md shadow-lg">
+						<div className="mb-4">
+							<h1 className="text-xl font-bold text-center mb-4">
+								Category List
+							</h1>
+							<ul>
+								{categories.length > 0 ? (
+									categories.map((category) => (
+										<li
+											key={category.id}
+											className="flex justify-between items-center bg-gray-100 p-4 mb-2 rounded-md"
+										>
+											<span className="font-semibold">
+												{category.name} ({category.type}
+												)
+											</span>
+											<div className="flex space-x-4">
+												<FaEdit
+													className="text-blue-500 cursor-pointer"
+													onClick={() =>
+														handleEdit(category.id)
+													}
+												/>
+												<FaTrashAlt
+													className="text-red-500 cursor-pointer"
+													onClick={() =>
+														handleDelete(
+															category.id
+														)
+													}
+												/>
+											</div>
+										</li>
+									))
+								) : (
+									<p className="text-center text-gray-500">
+										No categories added yet.
+									</p>
+								)}
+							</ul>
+						</div>
 
-					<div className="text-center mt-6">
-						<button
-							onClick={() => {
-								navigate("/category/add");
-							}}
-							className="bg-blue-500 text-white px-4 py-2 rounded-md w-full"
-						>
-							+ Add New Category
-						</button>
+						<div className="text-center mt-6">
+							<button
+								onClick={() => {
+									navigate("/category/add");
+								}}
+								className="bg-blue-500 text-white px-4 py-2 rounded-md w-full"
+							>
+								+ Add New Category
+							</button>
+						</div>
 					</div>
 				</div>
-			</div>
+			)}
 			{(isAddModal || isEditModal) && (
 				<Modal
 					showModal={isAddModal || isEditModal}
