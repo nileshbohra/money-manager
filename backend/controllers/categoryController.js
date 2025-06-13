@@ -2,9 +2,10 @@ const Category = require('../db/models/categories');
 
 const getAllCategories = async (req, res) => {
     try {
+        const userId = req.user.id;
         let categoryList = await Category.findAll({
             where: {
-                user_id: 1
+                user_id: userId
             }
         })
 
