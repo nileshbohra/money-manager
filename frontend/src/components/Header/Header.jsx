@@ -12,13 +12,14 @@ const Navbar = () => {
 	const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
 	useEffect(() => {
-		checkLoginApi().then((res) => {
-			if (res.success) {
-				dispatch(setIsAuthenticated(true));
-			} else {
-				dispatch(setIsAuthenticated(false));
-			}
-		});
+		checkLoginApi()
+			.then((res) => {
+				if (res.success) {
+					dispatch(setIsAuthenticated(true));
+				} else {
+					dispatch(setIsAuthenticated(false));
+				}
+			});
 	}, []);
 	return (
 		<nav className="flex justify-center bg-black text-white px-8 md:px-16 lg:px-24">

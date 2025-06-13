@@ -38,7 +38,7 @@ exports.login = async (req, res) => {
   if (!user) return res.send("User not found");
 
   const result = await bcrypt.compare(password, user.password);
-  if (!result) return res.send("Incorrect password");
+  if (!result) return res.send("Incorrect Email or Password");
 
   const token = jwt.sign({ id: user.id, username: user.username, email }, privateKey, { expiresIn: '1d' });
   res.cookie('token', token, {
