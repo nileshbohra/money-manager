@@ -54,9 +54,9 @@ const Transactions = () => {
 					console.error("Error fetching categories:", err);
 					navigate("/login");
 				});
-			};
-			const fetchAccounts = async () => {
-				await getAccountsApi()
+		};
+		const fetchAccounts = async () => {
+			await getAccountsApi()
 				.then((params) => {
 					dispatch(setAccounts(params));
 					setIsLoading(false);
@@ -65,9 +65,9 @@ const Transactions = () => {
 					console.error("Error fetching accounts:", err);
 					navigate("/login");
 				});
-			};
-			const fetchTransactions = async () => {
-				await getTransactionsApi()
+		};
+		const fetchTransactions = async () => {
+			await getTransactionsApi()
 				.then((params) => {
 					dispatch(setTransactions(params.data));
 					setIsLoading(false);

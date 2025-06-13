@@ -31,7 +31,8 @@ fields['description'] = { type: DataTypes.TEXT, allowNull: true };
 
 const indexes = [
     { fields: ['account_id'] },
-    { fields: ['category_id'] }
+    { fields: ['category_id'] },
+    { fields: ['user_id'] },
 ]
 
 module.exports = dbConnector.define('transactions', fields, { indexes, freezeTableName: true });
