@@ -25,7 +25,7 @@ const Apexchart = ({ id, labels, series, type }) => {
 	}
 
 	return (
-		<div className="bg-slate-50 rounded-lg p-4">
+		<div className="w-1/2 bg-slate-50 rounded-lg p-4 mx-10">
 			<Chart
 				options={chartData.options}
 				type={type}

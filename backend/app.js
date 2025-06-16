@@ -4,6 +4,7 @@ const app = express();
 const PORT = process.env.port || 3000;
 const cors = require('cors');
 const router = require('./routes/routes');
+const cookieParser = require('cookie-parser');
 
 const corsOptions = {
   origin: process.env.FRONTEND_BASE_URL || 'http://localhost:5173',
@@ -12,6 +13,7 @@ const corsOptions = {
   credentials: true
 };
 
+app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json())
 

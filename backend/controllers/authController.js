@@ -4,21 +4,8 @@ const User = require('../db/models/users');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const privateKey = process.env.JWT_PRIVATE_KEY;
-
-// Authenticate Token Middleware
-exports.authenticateToken = (req, res, next) => {
-  let token;
-  if (!!req.headers.cookie)
-    token = req.headers.cookie.split("=")[1];
-
-  if (!token) return res.sendStatus(401); // Unauthorized if no token is found
-
-  jwt.verify(token, privateKey, (err, user) => {
-    if (err) return res.sendStatus(403); // Forbidden if token is invalid
-    req.user = user;
-    next();
-  });
-};
+const OAuth2Client = require('google-auth-library').OAuth2Client;
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 exports.checkLogin = async (req, res) => {
   try {
@@ -69,8 +56,8 @@ exports.register = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to create user" });
   }
-
 };
+
 exports.logout = (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
@@ -81,20 +68,51 @@ exports.logout = (req, res) => {
   res.json({ success: true });
 };
 
-// exports.logout = (req, res) => {
-//   res.clearCookie('token', {
-//     httpOnly: true,
-//     secure: true,
-//     sameSite: 'None'
-//   });
-//   res.json({ success: true });
-// };
-
-// exports.logout = (req, res) => {
-//   res.clearCookie('token');
-//   res.json({ success: true });
-// };
-
 exports.protectedRoute = (req, res) => {
   res.send("Access granted to protected route!");
+};
+
+exports.googleOAuthLogin = async (req, res) => {
+  try {
+    const { id_token } = req.body;
+    if (!id_token) {
+      return res.status(400).json({ error: 'ID token is required' });
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken: id_token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, picture, sub: googleId } = payload;
+
+    let user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      user = await User.create({
+        email: email,
+        username: name,
+        google_id: googleId,
+        profile_picture: picture,
+        auth_provider: 'google',
+        password: null,
+      });
+    }
+
+    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, privateKey, { expiresIn: '1d' });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None'
+    });
+
+    res.status(200).json({
+      message: 'Login successful',
+      user: { id: user.id, username: user.username, email: user.email, profile_picture: user.profile_picture }
+    });
+  } catch (err) {
+    console.error('Google login error:', err);
+    res.status(401).json({ error: 'Invalid Google credentials' });
+  }
 };

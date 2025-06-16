@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerApi } from "../../api/auth";
 import { toast } from "sonner";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const Signup = () => {
 	const [signupForm, setSignupForm] = useState({
@@ -109,6 +110,12 @@ const Signup = () => {
 						Sign Up
 					</button>
 				</form>
+				<div className="flex items-center justify-between mt-4 mb-4">
+					<hr className="w-full border-gray-300" />
+					<span className="mx-2 text-gray-500">or</span>
+					<hr className="w-full border-gray-300" />
+				</div>
+				<GoogleLoginButton />
 				<p className="mt-4 text-center">
 					Already have an account?{" "}
 					<Link to="/login" className="text-blue-500 hover:underline">

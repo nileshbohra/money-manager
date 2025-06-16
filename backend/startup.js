@@ -2,7 +2,6 @@ const async = require('async');
 const dbConnector = require('./db/dbconnector');
 const authConnection = require('./db/db');
 const modelsList = require('./db/modelsList');
-const dbInitializer = require('./support/dbInitializer');
 
 async.series([(callback) => {
     authConnection(dbConnector, (err, data) => {
@@ -13,14 +12,12 @@ async.series([(callback) => {
         }
     })
 }, (callback) => {
-    let tables = Object.keys(modelsList)
-    async.eachSeries(tables, (table, callback) => {
-        dbInitializer(dbConnector, 'money_manager', table, modelsList, (err, data) => {
-            process.nextTick(callback, err)
-        })
-    }, (err) => {
+    dbConnector.sync().then(() => {
+        console.log('Database synced');
         process.nextTick(callback, null);
-    })
+    }).catch((err) => {
+        process.nextTick(callback, new Error(err));
+    });
 }, (callback) => {
     require('./app');
     process.nextTick(callback, null);

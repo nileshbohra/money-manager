@@ -1,6 +1,4 @@
-const { where } = require('sequelize');
 const Account = require('../db/models/accounts');
-const User = require('../db/models/users');
 
 const createAccount = async (req, res) => {
     try {

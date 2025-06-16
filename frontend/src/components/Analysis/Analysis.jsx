@@ -36,7 +36,7 @@ const Apexcharts = () => {
 						<h1 className="text-xl font-bold mb-4 pl-20 text-center mb-10 mt-10">
 							Expense Overview
 						</h1>
-						<div className="flex justify-center space-x-20">
+						<div className="flex justify-around">
 							<ThisMonthAnalysis />
 							<SixMonthsAnalysis />
 						</div>

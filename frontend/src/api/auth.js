@@ -47,4 +47,16 @@ const logoutApi = async () => {
     }
 };
 
-export { registerApi, loginApi , checkLoginApi, logoutApi};
+const googleOAuthLoginApi = async (idToken) => {
+    try {
+        const response = await axios.post(`${API_URL}/auth/google`, { id_token: idToken }, {
+            withCredentials: true // Ensure cookies are sent with the request
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error logging in with Google", error);
+        throw error;
+    }
+};
+
+export { registerApi, loginApi, checkLoginApi, logoutApi, googleOAuthLoginApi };

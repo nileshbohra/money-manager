@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {
-	setAuthToken,
-	setIsAuthenticated,
-} from "../../features/authToken/authTokenSlice";
+import { setIsAuthenticated } from "../../features/authToken/authTokenSlice";
 import { loginApi, logoutApi } from "../../api/auth";
 import { toast } from "sonner";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const Login = () => {
 	const navigate = useNavigate();
@@ -18,7 +16,6 @@ const Login = () => {
 			logoutApi().then((res) => {
 				if (!!res.success) {
 					toast.success("Logout Successful");
-					dispatch(setAuthToken(null));
 					dispatch(setIsAuthenticated(false));
 					navigate("/login");
 				} else {
@@ -52,7 +49,6 @@ const Login = () => {
 			.then((res) => {
 				if (!!res.success) {
 					toast.success("Login Successful");
-					dispatch(setAuthToken(res.token));
 					dispatch(setIsAuthenticated(true));
 					navigate("/");
 				} else {
@@ -112,7 +108,13 @@ const Login = () => {
 						Login
 					</button>
 				</form>
-				<p className="mt-4 text-center">
+				<div className="flex items-center justify-between mt-4 mb-4">
+					<hr className="w-full border-gray-300" />
+					<span className="mx-2 text-gray-500">or</span>
+					<hr className="w-full border-gray-300" />
+				</div>
+				<GoogleLoginButton />
+				<p className="mt-4 text-center text-gray-600">
 					Don’t have an account?{" "}
 					<Link
 						to="/signup"

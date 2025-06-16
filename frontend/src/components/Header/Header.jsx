@@ -3,12 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { checkLoginApi } from "../../api/auth";
 import { setIsAuthenticated } from "../../features/authToken/authTokenSlice";
+import { getUserApi } from "../../api/user";
+import { setUser } from "../../features/user/userSlice";
 
 const Navbar = () => {
 	const dispatch = useDispatch();
 	const isAuthenticated = useSelector(
 		(state) => state.authToken.isAuthenticated
 	);
+	const user = useSelector((state) => state.user.value);
 	const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
 	useEffect(() => {
@@ -19,6 +22,9 @@ const Navbar = () => {
 				dispatch(setIsAuthenticated(false));
 			}
 		});
+		getUserApi().then((res) => {
+			dispatch(setUser(res));
+		});
 	}, []);
 	return (
 		<nav className="flex justify-center bg-black text-white px-8 md:px-16 lg:px-24">
@@ -28,9 +34,6 @@ const Navbar = () => {
 				</div>
 				<div className="space-x-6">
 					<ul className="flex space-x-8">
-						{/* <li className="hover:text-gray-400">
-							<Link to="/">Home</Link>
-						</li> */}
 						<li className="hover:text-gray-400">
 							<Link to="/analysis">Analysis</Link>
 						</li>
@@ -61,7 +64,11 @@ const Navbar = () => {
 								}
 							>
 								<img
-									src="https://avatar.iran.liara.run/public/17"
+									src={
+										user.id
+											? user.profile_picture
+											: "https://avatar.iran.liara.run/public/17"
+									}
 									alt="User Avatar"
 									className="w-10 h-10 rounded-full object-cover"
 								/>
