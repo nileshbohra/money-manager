@@ -25,6 +25,7 @@ export default function GoogleLoginButton() {
 
 	return (
 		<GoogleLogin
+			width={400}
 			onSuccess={handleLogin}
 			onError={() => alert("Google login error")}
 			useOneTap

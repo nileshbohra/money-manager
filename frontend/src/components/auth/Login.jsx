@@ -113,9 +113,7 @@ const Login = () => {
 					<span className="mx-2 text-gray-500">or</span>
 					<hr className="w-full border-gray-300" />
 				</div>
-				<div className="w-full">
-					<GoogleLoginButton />
-				</div>
+				<GoogleLoginButton />
 				<p className="mt-4 text-center text-gray-600">
 					Don’t have an account?{" "}
 					<Link

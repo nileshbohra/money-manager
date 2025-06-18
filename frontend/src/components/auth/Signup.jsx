@@ -115,9 +115,7 @@ const Signup = () => {
 					<span className="mx-2 text-gray-500">or</span>
 					<hr className="w-full border-gray-300" />
 				</div>
-				<div className="w-full">
-					<GoogleLoginButton />
-				</div>
+				<GoogleLoginButton />
 				<p className="mt-4 text-center">
 					Already have an account?{" "}
 					<Link to="/login" className="text-blue-500 hover:underline">
