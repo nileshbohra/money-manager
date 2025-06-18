@@ -12,7 +12,6 @@ exports.getUserById = async (req, res) => {
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
         }
-        console.log('ssssssssss', userData);
         res.status(200).json(userData);
     } catch (error) {
         console.error("Error fetching user", error);
