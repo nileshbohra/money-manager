@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const DataTypes = Sequelize.DataTypes;
 const dbConnector = require('../dbconnector');
 const User = require('./users')
+const Transaction = require('./transactions');
 
 const fields = {};
 fields['id'] = { type: DataTypes.BIGINT, allowNull: false, primaryKey: true, autoIncrement: true };
@@ -19,7 +20,25 @@ const indexes = [
     { fields: ['category_name'] }
 ];
 
-module.exports = dbConnector.define('categories', fields, {
+const Category = dbConnector.define('categories', fields, {
     indexes,
     freezeTableName: true
-})
+});
+
+Category.belongsTo(User, {
+    foreignKey: 'user_id'
+});
+
+User.hasMany(Category, {
+    foreignKey: 'user_id'
+});
+
+Category.hasMany(Transaction, {
+    foreignKey: 'category_id'
+});
+
+Transaction.belongsTo(Category, {
+    foreignKey: 'category_id'
+});
+
+module.exports = Category;

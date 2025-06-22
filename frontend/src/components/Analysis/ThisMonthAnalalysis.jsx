@@ -1,36 +1,6 @@
-import React, { useEffect, useState } from "react";
 import Apexchart from "./ApexCharts";
-import { getAnalysis } from "../../api/analysis";
 
-const ThisMonthAnalysis = () => {
-	const [chartData, setChartData] = useState({
-		series: [],
-		labels: [],
-		type: "donut",
-	});
-	const [hasData, setHasData] = useState(false);
-	useEffect(() => {
-		getAnalysis()
-			.then((data) => {
-				if (data.length > 0) {
-					const series = data.map((item) => item.totalSpent);
-					const labels = data.map((item) => item.category);
-					setChartData({
-						series: series,
-						labels: labels,
-						type: "donut",
-					});
-					setHasData(true);
-					// console.log(chartData);
-				} else {
-					setHasData(false);
-				}
-			})
-			.catch((error) => {
-				console.error("Error fetching the data", error);
-			});
-	}, []);
-
+const ThisMonthAnalysis = ({chartData, hasData}) => {
 	return (
 		<>
 			{!hasData ? (

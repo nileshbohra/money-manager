@@ -1,25 +1,44 @@
 import React, { useEffect, useState } from "react";
 import SixMonthsAnalysis from "./SixMonthsAnalysis";
 import ThisMonthAnalysis from "./ThisMonthAnalalysis";
-import { getAnalysis } from "../../api/analysis";
+import { getMonthlyAnalysis } from "../../api/analysis";
 import { useNavigate } from "react-router-dom";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Apexcharts = () => {
 	const navigate = useNavigate();
-	const [analysisData, setAnalysisData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [selectedOption, setSelectedOption] = useState("expense");
+	const [monthlyChartData, setMonthlyChartData] = useState({
+		series: [],
+		labels: [],
+		type: "donut",
+	});
+	const [monthlyHasData, setMonthlyHasData] = useState(false);
 
 	useEffect(() => {
-		getAnalysis()
+		getMonthlyAnalysis(selectedOption)
 			.then((data) => {
-				setAnalysisData(data);
-				setIsLoading(false);
+				if (data.length > 0) {
+					const series = data.map((item) => item.totalSpent);
+					const labels = data.map((item) => item.category);
+					setMonthlyChartData({
+						series: series,
+						labels: labels,
+						type: "donut",
+					});
+					setMonthlyHasData(true);
+					setIsLoading(false);
+				} else {
+					setMonthlyHasData(false);
+					setIsLoading(false);
+				}
 			})
 			.catch((error) => {
-				navigate("/login");
+				console.error("Error fetching the data", error);
+				navigate("/analysis");
 			});
-	}, []);
+	}, [selectedOption]);
 
 	return (
 		<>
@@ -31,14 +50,46 @@ const Apexcharts = () => {
 					autoplay
 				/>
 			) : (
-				<div className="min-h-screen text-white flex items-start justify-center bg-gray-800">
+				<div className="min-h-screen flex items-start justify-center bg-gray-800">
 					<div className="flex flex-col w-full">
-						<h1 className="text-xl font-bold mb-4 pl-20 text-center mb-10 mt-10">
-							Expense Overview
-						</h1>
+						<div className="w-full flex justify-around items-center mb-4 mt-4">
+							<button
+								className={`w-1/2 mx-10 text-xl text-white font-bold text-center p-4 rounded-lg hover:bg-gray-600 ${
+									selectedOption === "income"
+										? "bg-gray-500"
+										: ""
+								}`}
+								onClick={() => setSelectedOption("income")}
+							>
+								Income Overview
+							</button>
+							<button
+								className={`w-1/2 mx-10 text-xl text-white font-bold text-center p-4 rounded-lg hover:bg-gray-600 ${
+									selectedOption === "expense"
+										? "bg-gray-500"
+										: ""
+								}`}
+								onClick={() => setSelectedOption("expense")}
+							>
+								Expense Overview
+							</button>
+						</div>
 						<div className="flex justify-around">
-							<ThisMonthAnalysis />
-							<SixMonthsAnalysis />
+							<div className="flex flex-col justify-between items-center w-1/2 bg-slate-50 rounded-lg mx-10">
+								<ThisMonthAnalysis
+									chartData={monthlyChartData}
+									hasData={monthlyHasData}
+								/>
+								<div className="w-full flex justify-center mt-4 bg-slate-200 p-4 rounded-lg">
+									<h3 className="font-bold text-gray-700">Monthly Analysis</h3>
+								</div>
+							</div>
+							<div className="flex flex-col justify-between items-center w-1/2 bg-slate-50 rounded-lg mx-10">
+								<SixMonthsAnalysis />
+								<div className="w-full flex justify-center mt-4 bg-slate-200 p-4 rounded-lg">
+									<h3 className="font-bold text-gray-700">Past Six Month's Analysis</h3>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -25,11 +25,11 @@ const Apexchart = ({ id, labels, series, type }) => {
 	}
 
 	return (
-		<div className="w-1/2 bg-slate-50 rounded-lg p-4 mx-10">
+		<div className="flex h-full w-full mt-4 justify-center items-end">
 			<Chart
 				options={chartData.options}
 				type={type}
-				width="500"
+				width="400"
 				series={chartData.series}
 			/>
 		</div>

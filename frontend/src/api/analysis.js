@@ -1,9 +1,9 @@
 import axios from 'axios'
 const API_URL = import.meta.env.VITE_API_URL;
 
-const getAnalysis = async () => {
+const getMonthlyAnalysis = async (categoryType) => {
     try {
-        const response = await axios.get(`${API_URL}/analysis`, {
+        const response = await axios.post(`${API_URL}/analysis/monthly`, { category_type: categoryType }, {
             withCredentials: true // Ensure cookies are sent with the request
         });
         return response.data;
@@ -12,4 +12,4 @@ const getAnalysis = async () => {
         throw error;
     }
 };
-export { getAnalysis };
+export { getMonthlyAnalysis };

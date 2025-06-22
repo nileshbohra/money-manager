@@ -33,7 +33,8 @@ const updateAccount = async (req, res) => {
     try {
         const { account_name, balance } = req.body;
         const account_id = req.params.id;
-        const account = await Account.findByPk(account_id);
+        const user_id = req.user.id;
+        const account = await Account.findOne({ where: { user_id, account_id } });
         if (!account) {
             return res.status(404).json({ error: 'Account not found' });
         }
@@ -51,7 +52,8 @@ const updateAccount = async (req, res) => {
 const deleteAccount = async (req, res) => {
     try {
         const account_id = req.params.id;
-        const account = await Account.findByPk(account_id);
+        const user_id = req.user.id;
+        const account = await Account.findOne({ where: { user_id, account_id } });
         if (!account) {
             return res.status(404).json({ error: 'Account not found' });
         }

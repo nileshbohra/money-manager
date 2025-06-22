@@ -1,5 +1,5 @@
 const Category = require('../db/models/categories');
-const Transaction = require('../db/models/transations');
+const Transaction = require('../db/models/transactions');
 const Account = require('../db/models/accounts');
 
 const getAllTransactions = async (req, res) => {
@@ -27,6 +27,7 @@ const addTransaction = async (req, res) => {
         transactionType = !!transactionType.income ? "income" : "expense";
         const category = await Category.findOne({
             where: {
+                user_id: userId,
                 id: categoryID
             }
         })
@@ -84,10 +85,12 @@ const addTransaction = async (req, res) => {
 
 const editTransaction = async (req, res) => {
     try {
+        const userId = req.user.id;
         const { id, amount, type, category_id } = req.body;
 
         const transaction = await Transaction.findOne({
             where: {
+                user_id: userId,
                 id: id
             }
         })
@@ -118,8 +121,10 @@ const editTransaction = async (req, res) => {
 const deleteTransaction = async (req, res) => {
     try {
         const { id } = req.body;
+        const userId = req.user.id;
         const deleted = Transaction.destroy({
             where: {
+                user_id: userId,
                 id: id
             }
         })

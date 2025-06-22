@@ -123,7 +123,7 @@ const Transactions = () => {
 						console.error("Error adding transaction:", err);
 					});
 			} else {
-				toast.error("All Fields are mendatrory");
+				toast.error("All Fields are mandatory");
 			}
 		} catch (err) {
 			console.error(err);

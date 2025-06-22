@@ -18,13 +18,14 @@ const getAllCategories = async (req, res) => {
 
 const addCategory = async (req, res) => {
     try {
+        const userId = req.user.id;
         let { categoryName, categoryType } = req.body;
         categoryType = !!categoryType.income ? 'income' : 'expense'
         if (!categoryName || !categoryType) {
             return res.status(400).json({ message: 'Name and type are required' });
         }
 
-        const newCategory = await Category.create({ user_id: 1, category_name: categoryName, category_type: categoryType });
+        const newCategory = await Category.create({ user_id: userId, category_name: categoryName, category_type: categoryType });
         res.status(201).json({
             id: newCategory.id,
             name: newCategory.category_name,
@@ -38,15 +39,16 @@ const addCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
     try {
+        const userId = req.user.id;
         let { id, categoryName, categoryType } = req.body;
         categoryType = !!categoryType.income ? 'income' : 'expense'
         const [updated] = await Category.update(
             { category_name: categoryName, category_type: categoryType },
-            { where: { id } }
+            { where: { user_id: userId, id } }
         );
 
         if (updated) {
-            const updatedCategory = await Category.findOne({ where: { id } });
+            const updatedCategory = await Category.findOne({ where: { user_id: userId, id } });
             res.status(200).json({
                 id: updatedCategory.id,
                 name: updatedCategory.category_name,
@@ -65,9 +67,11 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
     try {
         const { id } = req.body;
+        const userId = req.user.id;
 
         const deleted = await Category.destroy({
             where: {
+                user_id: userId,
                 id: id
             }
         })

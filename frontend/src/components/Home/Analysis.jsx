@@ -10,8 +10,8 @@ const Apexcharts = () => {
 				<div
 					className="flex flex-col w-full"
 				>
-					<h1 className="text-xl font-bold mb-4 pl-20 text-center mb-10 mt-10">
-						Expense Overview
+					<h1 className="text-xl font-bold mb-4 mx-16 text-left mt-10">
+						Dummy Dashboard
 					</h1>
 					<div className="flex justify-center space-x-20">
 						<ThisMonthAnalysis />
