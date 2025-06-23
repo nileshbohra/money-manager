@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { checkLoginApi } from "../../api/auth";
@@ -13,6 +13,7 @@ const Navbar = () => {
 	);
 	const user = useSelector((state) => state.user.value);
 	const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+	const dropdownRef = useRef(null);
 
 	useEffect(() => {
 		checkLoginApi().then((res) => {
@@ -26,6 +27,23 @@ const Navbar = () => {
 			dispatch(setUser(res));
 		});
 	}, []);
+
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target)
+			) {
+				setShowProfileDropdown(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
 	return (
 		<nav className="flex justify-center bg-black text-white px-8 md:px-16 lg:px-24">
 			<div className="container py-2 flex justify-between items-center">
@@ -76,6 +94,7 @@ const Navbar = () => {
 							</div>
 							<div
 								className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg group-hover:block z-50"
+								ref={dropdownRef}
 								style={{
 									display: showProfileDropdown
 										? "block"

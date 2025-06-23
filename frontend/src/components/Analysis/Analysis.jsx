@@ -74,8 +74,8 @@ const Apexcharts = () => {
 								Expense Overview
 							</button>
 						</div>
-						<div className="flex justify-around">
-							<div className="flex flex-col justify-between items-center w-1/2 bg-slate-50 rounded-lg mx-10">
+						<div className="flex flex-col gap-10 px-10 justify-center items-center m-5 lg:flex-row lg:justify-around lg:items-stretch">
+							<div className="flex flex-col justify-between items-center w-full lg:w-1/2 bg-slate-50 rounded-lg mx-10">
 								<ThisMonthAnalysis
 									chartData={monthlyChartData}
 									hasData={monthlyHasData}
@@ -84,7 +84,7 @@ const Apexcharts = () => {
 									<h3 className="font-bold text-gray-700">Monthly Analysis</h3>
 								</div>
 							</div>
-							<div className="flex flex-col justify-between items-center w-1/2 bg-slate-50 rounded-lg mx-10">
+							<div className="flex flex-col justify-between items-center w-full lg:w-1/2 bg-slate-50 rounded-lg mx-10">
 								<SixMonthsAnalysis />
 								<div className="w-full flex justify-center mt-4 bg-slate-200 p-4 rounded-lg">
 									<h3 className="font-bold text-gray-700">Past Six Month's Analysis</h3>
