@@ -36,7 +36,7 @@ const Apexcharts = () => {
 			})
 			.catch((error) => {
 				console.error("Error fetching the data", error);
-				navigate("/analysis");
+				navigate("/login");
 			});
 	}, [selectedOption]);
 
