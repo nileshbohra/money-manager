@@ -8,6 +8,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 const Apexcharts = () => {
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(true);
+	const [isGraphLoading, setIsGraphLoading] = useState(true);
 	const [selectedOption, setSelectedOption] = useState("expense");
 	const [monthlyChartData, setMonthlyChartData] = useState({
 		series: [],
@@ -29,9 +30,11 @@ const Apexcharts = () => {
 					});
 					setMonthlyHasData(true);
 					setIsLoading(false);
+					setIsGraphLoading(false);
 				} else {
 					setMonthlyHasData(false);
 					setIsLoading(false);
+					setIsGraphLoading(false);
 				}
 			})
 			.catch((error) => {
@@ -74,23 +77,36 @@ const Apexcharts = () => {
 								Expense Overview
 							</button>
 						</div>
-						<div className="flex flex-col gap-10 px-5 m-5 lg:p-0 lg:m-0 lg:gap-0 justify-center items-center lg:flex-row lg:justify-around lg:items-stretch">
-							<div className="flex flex-col justify-between items-center w-full lg:w-1/2 bg-slate-50 rounded-lg mx-10">
-								<ThisMonthAnalysis
-									chartData={monthlyChartData}
-									hasData={monthlyHasData}
-								/>
-								<div className="w-full flex justify-center mt-4 bg-slate-200 p-4 rounded-lg">
-									<h3 className="font-bold text-gray-700">Monthly Analysis</h3>
+						{isGraphLoading ? (
+							<DotLottieReact
+								height={100}
+								src="https://lottie.host/c81c58b2-4e11-4319-9dbe-af3f2851630e/dXYQ8B6scd.lottie"
+								loop
+								autoplay
+							/>
+						) : (
+							<div className="flex flex-col gap-10 px-5 m-5 lg:p-0 lg:m-0 lg:gap-0 justify-center items-center lg:flex-row lg:justify-around lg:items-stretch">
+								<div className="flex flex-col justify-between items-center w-full lg:w-1/2 bg-slate-50 rounded-lg mx-10">
+									<ThisMonthAnalysis
+										chartData={monthlyChartData}
+										hasData={monthlyHasData}
+									/>
+									<div className="w-full flex justify-center mt-4 bg-slate-200 p-4 rounded-lg">
+										<h3 className="font-bold text-gray-700">
+											Monthly Analysis
+										</h3>
+									</div>
+								</div>
+								<div className="flex flex-col justify-between items-center w-full lg:w-1/2 bg-slate-50 rounded-lg mx-10">
+									<SixMonthsAnalysis />
+									<div className="w-full flex justify-center mt-4 bg-slate-200 p-4 rounded-lg">
+										<h3 className="font-bold text-gray-700">
+											Past Six Month's Analysis
+										</h3>
+									</div>
 								</div>
 							</div>
-							<div className="flex flex-col justify-between items-center w-full lg:w-1/2 bg-slate-50 rounded-lg mx-10">
-								<SixMonthsAnalysis />
-								<div className="w-full flex justify-center mt-4 bg-slate-200 p-4 rounded-lg">
-									<h3 className="font-bold text-gray-700">Past Six Month's Analysis</h3>
-								</div>
-							</div>
-						</div>
+						)}
 					</div>
 				</div>
 			)}
