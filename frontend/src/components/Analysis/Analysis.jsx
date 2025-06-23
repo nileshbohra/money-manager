@@ -18,8 +18,9 @@ const Apexcharts = () => {
 	const [monthlyHasData, setMonthlyHasData] = useState(false);
 
 	useEffect(() => {
+		setIsGraphLoading(true);
 		getMonthlyAnalysis(selectedOption)
-			.then((data) => {
+			.then(async (data) => {
 				if (data.length > 0) {
 					const series = data.map((item) => item.totalSpent);
 					const labels = data.map((item) => item.category);
@@ -78,12 +79,14 @@ const Apexcharts = () => {
 							</button>
 						</div>
 						{isGraphLoading ? (
-							<DotLottieReact
-								height={100}
-								src="https://lottie.host/c81c58b2-4e11-4319-9dbe-af3f2851630e/dXYQ8B6scd.lottie"
-								loop
-								autoplay
-							/>
+							<div className="mt-20">
+								<DotLottieReact
+									height={30}
+									src="https://lottie.host/c81c58b2-4e11-4319-9dbe-af3f2851630e/dXYQ8B6scd.lottie"
+									loop
+									autoplay
+								/>
+							</div>
 						) : (
 							<div className="flex flex-col gap-10 px-5 m-5 lg:p-0 lg:m-0 lg:gap-0 justify-center items-center lg:flex-row lg:justify-around lg:items-stretch">
 								<div className="flex flex-col justify-between items-center w-full lg:w-1/2 bg-slate-50 rounded-lg mx-10">
