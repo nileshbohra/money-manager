@@ -40,7 +40,7 @@ const TransactionTable = ({
 							{categoryName(transaction.category_id)}
 						</td>
 						<td className="py-2 px-4 border-b text-right">
-							{transaction.description}
+							{transaction.description ? transaction.description : "-"}
 						</td>
 						<td className="py-2 px-4 border-b text-right">
 							{transaction.amount} (

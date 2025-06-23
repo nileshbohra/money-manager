@@ -16,6 +16,7 @@ import { getAccountsApi } from "../../api/account";
 import {
 	getTransactionsApi,
 	addTransactionApi,
+	editTransactionApi,
 	deleteTransactionApi,
 } from "../../api/transactions";
 import { toast } from "sonner";
@@ -32,9 +33,9 @@ const Transactions = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const [transactinoform, setTransactionForm] = useState({
-		categoryID: "",
-		accountID: "",
-		amount: "",
+		categoryID: 0,
+		accountID: 0,
+		amount: 0,
 		transactionType: {
 			income: false,
 			expense: false,
@@ -93,7 +94,7 @@ const Transactions = () => {
 		fetchAllData();
 	}, []);
 
-	const addNewTransaction = async () => {
+	const addNewTransaction = () => {
 		try {
 			if (
 				!!transactinoform.amount &&
@@ -102,22 +103,7 @@ const Transactions = () => {
 			) {
 				addTransactionApi(transactinoform)
 					.then((params) => {
-						let data = params;
-
-						data = {
-							...data,
-							transactionType: {
-								income:
-									data.transactionType == "income"
-										? true
-										: false,
-								expense:
-									data.transactionType == "expense"
-										? true
-										: false,
-							},
-						};
-						dispatch(addTransaction(data));
+						dispatch(addTransaction(params.data));
 					})
 					.catch((err) => {
 						console.error("Error adding transaction:", err);
@@ -157,39 +143,56 @@ const Transactions = () => {
 	};
 
 	const saveEdited = (id) => {
-		let tran = {
+		let tranData = {
 			id: id,
-			categoryID: transactinoform.categoryID,
-			accountID: transactinoform.accountID,
+			category_id: transactinoform.categoryID,
+			account_id: transactinoform.accountID,
 			amount: transactinoform.amount,
-			type: !!transactinoform.transactionType.income
+			transaction_type: !!transactinoform.transactionType.income
 				? "income"
 				: "expense",
 			description: transactinoform.description,
 		};
-		dispatch(editTransaction(tran));
+		editTransactionApi(tranData)
+			.then((params) => {
+				dispatch(editTransaction(params.data));
+			})
+			.catch((err) => {
+				console.error("Error editing transaction:", err);
+			});
 	};
 
-	const handleEdit = useCallback((id) => {
-		setEditID(id);
-		let currTransaction = transactions.find(
-			(transaction) => id === transaction.id
-		);
-		setTransactionForm({
-			categoryID: currTransaction.id,
-			amount: currTransaction.amount,
-			categoryType: {
-				income: currTransaction.type == "income" ? true : false,
-				expense: currTransaction.type == "expense" ? true : false,
-			},
-			description: currTransaction.description,
-		});
-		setShowModal(true);
-	}, []);
+	const handleEdit = useCallback(
+		(id) => {
+			setEditID(id);
+			let currTransaction = transactions.find(
+				(transaction) => id === transaction.id
+			);
+			setTransactionForm({
+				categoryID: currTransaction.category_id,
+				accountID: currTransaction.account_id,
+				amount: currTransaction.amount,
+				transactionType: {
+					income:
+						currTransaction.transaction_type == "income"
+							? true
+							: false,
+					expense:
+						currTransaction.transaction_type == "expense"
+							? true
+							: false,
+				},
+				description: currTransaction.description,
+			});
+			setShowModal(true);
+		},
+		[transactions]
+	);
 
 	const clearValues = () => {
 		setTransactionForm({
 			categoryID: "",
+			accountID: "",
 			amount: "",
 			transactionType: {
 				income: false,
@@ -201,7 +204,7 @@ const Transactions = () => {
 	};
 
 	const handleDelete = useCallback(
-		async (id) => {
+		(id) => {
 			deleteTransactionApi(id)
 				.then((params) => {
 					dispatch(deleteTransaction(id));
@@ -255,7 +258,7 @@ const Transactions = () => {
 									onFilter={onFilter}
 								/>
 							</div>
-							<ul>
+							<div className="w-full flex justify-between items-center mb-4 overflow-auto">
 								{transactions.length > 0 ? (
 									<TransactionTable
 										accounts={accounts}
@@ -269,7 +272,7 @@ const Transactions = () => {
 										No Transactions added yet.
 									</p>
 								)}
-							</ul>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -340,6 +343,9 @@ const Transactions = () => {
 										<div className="mb-6">
 											<select
 												onChange={handleChange}
+												value={
+													transactinoform.categoryID
+												}
 												name="categoryID"
 												className="w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 											>
@@ -370,6 +376,9 @@ const Transactions = () => {
 											</label>
 											<select
 												onChange={handleChange}
+												value={
+													transactinoform.accountID
+												}
 												name="accountID"
 												id="accountID"
 												className="w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -397,7 +406,7 @@ const Transactions = () => {
 											<input
 												value={transactinoform.amount}
 												onChange={handleChange}
-												type="text"
+												type="number"
 												name="amount"
 												placeholder="Transaction Amount"
 												className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -415,6 +424,9 @@ const Transactions = () => {
 												id="description"
 												name="description"
 												onChange={handleChange}
+												value={
+													transactinoform.description
+												}
 												rows="3"
 												className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 												placeholder="Enter a brief description of the transaction..."

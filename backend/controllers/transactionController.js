@@ -1,4 +1,3 @@
-const Category = require('../db/models/categories');
 const Transaction = require('../db/models/transactions');
 const Account = require('../db/models/accounts');
 
@@ -25,16 +24,6 @@ const addTransaction = async (req, res) => {
         const userId = req.user.id;
 
         transactionType = !!transactionType.income ? "income" : "expense";
-        const category = await Category.findOne({
-            where: {
-                user_id: userId,
-                id: categoryID
-            }
-        })
-
-        if (!category)
-            return res.status(404).json({ error: "category Not Found" })
-
 
         const account = await Account.findOne({
             where: {
@@ -56,9 +45,9 @@ const addTransaction = async (req, res) => {
         }
 
         const newTransaction = await Transaction.create({
-            user_id: userId,
-            account_id: accountID,
-            category_id: categoryID,
+            user_id: parseInt(userId),
+            account_id: parseInt(accountID),
+            category_id: parseInt(categoryID),
             description: description,
             transaction_type: transactionType,
             amount: amount
@@ -67,26 +56,17 @@ const addTransaction = async (req, res) => {
         if (!newTransaction)
             return res.status(400).json({ error: "Error adding Transaction" })
 
-
-
-        let obj = {
-            id: newTransaction.dataValues.id,
-            amount: newTransaction.dataValues.amount,
-            transactionType: newTransaction.dataValues.transaction_type,
-            description: newTransaction.dataValues.description
-        }
-        return res.status(200).json({ success: true, data: { ...obj, category: category.dataValues } });
+        return res.status(200).json({ success: true, data: newTransaction.dataValues });
     } catch (err) {
         console.error('Error adding Transaction:', err.message);
         res.status(500).json({ message: 'Error adding Transaction' });
     }
 }
 
-
 const editTransaction = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { id, amount, type, category_id } = req.body;
+        const { id, category_id, account_id, amount, transaction_type, description } = req.body;
 
         const transaction = await Transaction.findOne({
             where: {
@@ -96,25 +76,54 @@ const editTransaction = async (req, res) => {
         })
 
         if (!transaction)
-            return res.send("Transaction not found")
+            return res.status(404).json({ error: "Transaction Not Found" })
 
-        const updatedTransaction = await Transaction.update({
-            what: {
-                amount: amount,
-                transaction_type: type,
-                category_id: category_id
+        if (amount !== transaction.amount) {
+            const account = await Account.findOne({
+                where: {
+                    id: account_id,
+                    user_id: userId
+                }
+            });
+
+            if (amount > transaction.amount) {
+                account.balance = account.balance + (amount - transaction.amount);
+                await account.save();
+            } else {
+                account.balance = account.balance - (transaction.amount - amount);
+                await account.save();
             }
-        })
+        }
 
-        console.log(updatedTransaction);
+        const [updated] = await Transaction.update(
+            {
+                category_id,
+                account_id,
+                amount,
+                transaction_type,
+                description
+            }, {
+            where: {
+                user_id: userId,
+                id: id
+            }
+        });
 
-        res.status(200).json({
-            updatedTransaction
-        })
+        if (!updated)
+            return res.status(400).json({ error: "Error updating Transaction" })
+        else {
+            const updatedTransaction = await Transaction.findOne({
+                where: {
+                    user_id: userId,
+                    id: id
+                }
+            });
+            return res.status(200).json({ success: true, data: updatedTransaction });
+        }
 
     } catch (err) {
         console.error(err)
-        res.send("Error in Updating Transaction")
+        res.status(500).json({ message: 'Error updating Transaction' });
     }
 }
 
