@@ -35,6 +35,8 @@ const addTransaction = async (req, res) => {
         if (!account)
             return res.status(404).json({ error: "Account Not Found" })
         else {
+            account.balance = parseFloat(account.balance);
+            amount = parseFloat(amount);
             if (transactionType === "income") {
                 account.balance = account.balance + amount;
                 await account.save();
@@ -131,13 +133,39 @@ const deleteTransaction = async (req, res) => {
     try {
         const { id } = req.body;
         const userId = req.user.id;
-        const deleted = Transaction.destroy({
+
+        const transaction = await Transaction.findOne({
+            where: {
+                user_id: userId,
+                id: id
+            }
+        });
+
+        if (!transaction)
+            return res.status(404).json({ error: "Transaction Not Found" });
+
+        const account = await Account.findOne({
+            where: {
+                user_id: userId
+            }
+        });
+
+        account.balance = parseFloat(account.balance);
+        transaction.amount = parseFloat(transaction.amount);
+        if (transaction.transaction_type === "income") {
+            account.balance = account.balance - transaction.amount;
+        } else {
+            account.balance = account.balance + transaction.amount;
+        }
+
+        const deleted = await Transaction.destroy({
             where: {
                 user_id: userId,
                 id: id
             }
         })
         if (!!deleted) {
+            await account.save();
             res.status(200).json({ message: "Transaction deleted Successfully" })
         }
         else {

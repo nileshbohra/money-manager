@@ -33,9 +33,9 @@ const Transactions = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const [transactinoform, setTransactionForm] = useState({
-		categoryID: 0,
-		accountID: 0,
-		amount: 0,
+		categoryID: "",
+		accountID: "",
+		amount: "",
 		transactionType: {
 			income: false,
 			expense: false,
