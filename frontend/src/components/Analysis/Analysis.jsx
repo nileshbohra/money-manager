@@ -74,7 +74,7 @@ const Apexcharts = () => {
 								Expense Overview
 							</button>
 						</div>
-						<div className="flex flex-col gap-10 px-10 justify-center items-center m-5 lg:flex-row lg:justify-around lg:items-stretch">
+						<div className="flex flex-col gap-10 px-5 m-5 lg:p-0 lg:m-0 lg:gap-0 justify-center items-center lg:flex-row lg:justify-around lg:items-stretch">
 							<div className="flex flex-col justify-between items-center w-full lg:w-1/2 bg-slate-50 rounded-lg mx-10">
 								<ThisMonthAnalysis
 									chartData={monthlyChartData}
