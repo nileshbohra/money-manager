@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { useSelector, useDispatch } from "react-redux";
 import {
 	setAccounts,
+	addAccount,
+	editAccount,
 	deleteAccount,
 } from "../../features/accounts/accountsSlice";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
@@ -23,6 +25,7 @@ const Accounts = () => {
 	const location = useLocation();
 	const isAddModal = location.pathname === "/accounts/add";
 	const isEditModal = !!location.pathname.includes("/accounts/edit");
+	const [showModal, setShowModal] = useState(false);
 	const [accountForm, setAccountForm] = useState({
 		account_name: "",
 		balance: "",
@@ -52,9 +55,11 @@ const Accounts = () => {
 		try {
 			if (isAddModal) {
 				await createAccountApi(accountForm);
+				dispatch(addAccount(accountForm));
 				toast.success("Account created successfully");
 			} else if (isEditModal) {
 				await updateAccountApi(editID, accountForm);
+				dispatch(editAccount({ id: editID, ...accountForm }));
 				toast.success("Account updated successfully");
 			}
 			setAccountForm({
@@ -62,7 +67,7 @@ const Accounts = () => {
 				balance: "",
 			});
 			setEditID(null);
-			navigate("/accounts");
+			setShowModal(false);
 		} catch (error) {
 			console.error("Error saving account:", error);
 			toast.error("Error saving account");
@@ -91,6 +96,7 @@ const Accounts = () => {
 		});
 		setEditID(id);
 		navigate(`/accounts/edit/${id}`);
+		setShowModal(true);
 	};
 
 	const clearValues = () => {
@@ -99,7 +105,7 @@ const Accounts = () => {
 			balance: "",
 		});
 		setEditID(null);
-		navigate("/accounts");
+		setShowModal(false);
 	};
 
 	return (
@@ -120,9 +126,9 @@ const Accounts = () => {
 							</h1>
 							<ul>
 								{accounts.length > 0 ? (
-									accounts.map((account) => (
+									accounts.map((account, index) => (
 										<li
-											key={account.id}
+											key={index}
 											className="flex justify-between items-center bg-gray-100 p-4 mb-2 rounded-md"
 										>
 											<span className="font-semibold">
@@ -156,6 +162,7 @@ const Accounts = () => {
 						<div className="text-center mt-6">
 							<button
 								onClick={() => {
+									setShowModal(true);
 									navigate("/accounts/add");
 								}}
 								className="bg-blue-500 text-white px-4 py-2 rounded-md w-full"
@@ -166,9 +173,8 @@ const Accounts = () => {
 					</div>
 				</div>
 			)}
-			{(isAddModal || isEditModal) && (
+			{showModal && (
 				<Modal
-					showModal={isAddModal || isEditModal}
 					headingText={`${
 						!!isAddModal ? "Add New Account" : "Edit Account"
 					}`}
